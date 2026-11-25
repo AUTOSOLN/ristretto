@@ -80,7 +80,10 @@ func madvise(b []byte, readahead bool) error {
 	return nil
 }
 
+// msync writes the dirty pages of the mapped view b back to the file.
 func msync(b []byte) error {
-	// TODO: Figure out how to do msync on Windows.
-	return nil
+	if len(b) == 0 {
+		return nil
+	}
+	return syscall.FlushViewOfFile(uintptr(unsafe.Pointer(&b[0])), uintptr(len(b)))
 }

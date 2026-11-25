@@ -148,7 +148,10 @@ func (m *MmapFile) Sync() error {
 	if m == nil {
 		return nil
 	}
-	return Msync(m.Data)
+	if err := Msync(m.Data); err != nil {
+		return err
+	}
+	return syncFd(m.Fd)
 }
 
 func (m *MmapFile) Delete() error {
